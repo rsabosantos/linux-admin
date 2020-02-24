@@ -1,0 +1,333 @@
+#!/bin/bash
+#Admin I command script for linux admin
+#Made by richard Sabo Santos
+#to export variables use the source command to call the bash file
+clear
+echo " "
+#Functions section
+
+function close(){
+if [ "$entry" == "close" ];then
+  main
+else
+  echo " $entry" >> journal.txt
+   reading
+    fi
+}
+
+
+function journal() {
+echo " Admin LOG" >> journal.txt
+date >> journal.txt
+echo " " >> journal.txt
+}
+
+function reading() {
+read -p  "." entry
+close
+}
+
+
+function pause(){
+    read -p "$*"
+}
+#Main Menu
+function main() {
+clear
+tput setaf 3; echo             LINUX ADMIN SHELL SCRIPT
+echo                            By: Richard Sabo Santos
+tput setaf 7; echo " "
+echo " "
+echo 1.  See block devices.
+echo 2.  Free Memory.
+echo 3.  CPU information.
+echo 4.  Show Process page table.
+echo 5.  Verify if NUMA Hardware is present.
+echo 6.  How much RAM I need.
+echo 7.  See who  is logged.
+echo 8.  See Running Processes.
+echo 9.  Admin journal ...write close to exit.
+echo 10. Check for updates.
+echo 11. Changing menu display settings.
+echo 12. Change .bashrc file.
+echo 13. Change .bash_profile file.
+echo 14  Managing System Services.
+echo 15. Verify which loader is in use.
+echo 16. Update the grub Ubuntu.
+echo 17. See the Enviroment variables.
+echo 18. Show Network Statistics.
+echo 19. Show IP Configurations.
+echo 20. Show current Directory.
+echo 21. Show Available Disk Spaces.
+echo 22. Create Aliases.
+echo 23. Show Memory/Swap statistics.
+echo 24. Print System information.
+echo 25. Change menu display settings.
+echo 26. Updating grub fedora.
+echo 27. Repair a File System.
+echo 28. Upgrade installed packages.
+echo 29. Show the Parameters used to boot the system.
+
+tput setaf 3;  echo " "
+read -p "Enter a Number: "  option
+tput setaf 7; echo " "
+
+#If statements for  options
+if [ "$option" == '1' ];then
+clear
+echo "Results:"
+lsblk
+pause #back to function
+main
+elif [ "$option" == "2" ];then
+clear
+        echo "Results:"
+free "-m"
+echo " "
+pause
+main
+
+elif [ "$option" == "3" ];then
+clear
+        echo Showing CPU information
+cat /proc/cpuinfo
+echo " "
+pause
+main
+elif [ "$option" == "4" ];then
+clear
+        echo showing process page table
+cat /proc/$$/maps
+echo " "
+pause
+main
+elif [ "$option" == "5" ];then
+clear
+        echo results:
+numactl --hardware
+echo " "
+pause
+main
+elif [ "$option" == "6" ];then
+clear
+read -p "Enter the Physical RAM Currently Installed " ram
+         if  [ "$ram" -lt 2  ];then
+                echo you need 2 times the amount of ram as swap space but if hibernation is needed you will need 3 times.
+        pause
+        main
+        elif [ "$ram" -lt 8 ];then
+                echo You will need to have equal the amount of ram, but if hibernation is needed you will need 2 times the ram.
+        pause
+        main
+                elif [ "$ram" -lt 64 ];then
+                 echo At least 4 GB is required, but if hibernation is needed you will need 1.5  the ram.
+         pause
+        main
+        else
+                                echo 4 Gb is required, hibernation not recommended
+                                pause
+                                main
+        fi
+echo " "
+main
+elif [ "$option" == "7" ];then
+clear
+        echo Results:
+w
+echo " "
+pause
+main
+
+
+
+elif [ "$option" == "8" ];then
+clear
+         echo Showing Running Processes.
+        ps
+        echo " "
+        pause
+        main
+
+
+elif [ "$option" == "9" ];then #journal
+clear
+         echo Admin Journal.
+         if [ -e journal.txt ];then
+                 clear
+                 echo Admin Journal
+                 date
+                 journal #entry to txt file
+
+                 reading #input
+
+                  close #if statement
+
+         else
+                 touch journal.txt
+                  clear
+                  echo Admin Log
+                 date
+                 journal
+                  reading   #getting input
+                  close # if statement
+
+          fi
+
+
+
+
+elif [ "$option" == "10" ];then
+clear
+         echo Checking for updates....
+        sudo  yum install updates && echo "System Updated " && main || echo "Not permision"
+        pause
+        main
+
+
+elif [ "$option" == "11" ];then
+        vi /etc/default/grub && main
+
+
+elif [ "$option" == "12" ];then
+         vi .bashrc && main
+
+elif [ "$option" == "13" ];then
+         vi .bash_profile && main
+elif [ "$option" == "14" ];then
+        clear
+        systemctl && main
+
+
+elif [ "$option" == "15" ];then
+        clear
+        grubby --bootloader-probe || echo permision denied
+        pause
+        main
+elif [ "$option" == "16" ];then
+        clear
+        echo Updating the grub..
+         sudo grub2-mkconfig o /boot/grub2/grub.cfg  || echo "Permission Denied"
+        pause
+        main
+elif [ "$option" == "17" ];then
+        clear
+        echo Showing enviroment variables.
+         env
+        pause
+        main
+elif [ "$option" == "18" ];then
+        clear
+        echo Showing Network Statistics...
+        echo " "
+        netstat
+        pause
+        main
+elif [ "$option" == "19" ];then
+        clear
+        echo Showing Ip configurations...
+        echo ""
+        ifconfig
+        pause
+        main
+
+
+
+elif [ "$option" == "20" ];then
+        clear
+        echo Your current directory is...
+        pwd
+        pause
+        main
+
+elif [ "$option" == "21" ];then
+        clear
+        echo Available disk spaces..
+        df
+        pause
+        main
+
+elif [ "$option" == "22" ];then
+clear
+tput setaf 3; echo " "
+echo Creating and Aliases
+tput setaf 7; echo " "
+echo "  "
+read -p "Enter the alias to create " alias1
+read -p "Enter the command to associate " alias2
+echo " "
+  alias $alias1=$alias2
+
+echo "Your alias $alias1 was created "
+pause
+main
+
+elif [ "$option" == "23" ];then
+clear
+echo Showing memory/swap Stats....
+echo ""
+cat /proc/meminfo
+vmstat
+
+pause
+main
+
+elif [ "$option" == "24" ];then
+        clear
+        echo System information...
+        echo " "
+        uname -a
+        pause
+        main
+
+
+elif [ "$option" == "25" ];then
+        clear
+        vi /etc/default/grub
+        pause
+        main
+elif [ "$option" == "26" ];then
+        clear
+        echo "Updating boot loader on fedora"
+         grub2-mkconfig -o /boot/grub2/grub.cfg
+        pause
+        main
+
+
+elif [ "$option" == "27" ];then
+        clear
+        echo Reparing the the File system...
+        echo " "
+        read -p "Please enter the device.  example: /dev/sdc1  " device
+         sudo unmount $device && sudo fsck -p $device && sudo mount $device || echo "FIle system cannot be fix"
+
+        pause
+        main
+
+elif [ "$option" == "28" ];then
+        clear
+        echo Upgrading packages..
+        echo " "
+        sudo apt-get upgrade
+        pause
+        main
+elif [ "$option" == "29" ];then
+        clear
+        echo Paramenter used to boot the system....
+        cat /proc/cmdline
+        pause
+        main
+
+
+else
+clear
+echo " Noo option was selected....."
+
+pause
+main
+fi
+
+
+
+}
+main
+
