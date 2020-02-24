@@ -67,7 +67,9 @@ echo 26. Updating grub fedora.
 echo 27. Repair a File System.
 echo 28. Upgrade installed packages.
 echo 29. Show the Parameters used to boot the system.
-
+echo 30. Adjust user account defaults.
+echo 31. Configure SSH.
+echo 32. Start a service.
 tput setaf 3;  echo " "
 read -p "Enter a Number: "  option
 tput setaf 7; echo " "
@@ -316,8 +318,26 @@ elif [ "$option" == "29" ];then
         cat /proc/cmdline
         pause
         main
+elif [ "$option" == "30" ];then
+        clear
+        vi /etc/login.defs
+        pause
+        main
+elif [ "$option" == "31" ];then
+        clear
+        vi /etc/ssh/sshd_config
+        pause
+        main
 
 
+elif [ "$option" == "32" ];then
+        clear
+        echo Starting services...
+        echo " "
+        read -p "Enter the name of the service " service
+         systemctl start $service && echo $service service is now running || echo Error the service cannot start
+        pause
+        main
 else
 clear
 echo " Noo option was selected....."
@@ -330,4 +350,3 @@ fi
 
 }
 main
-
