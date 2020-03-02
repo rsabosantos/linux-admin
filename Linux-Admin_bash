@@ -1,10 +1,13 @@
 #!/bin/bash
-#Admin I command script for linux admin
+#######################################################         Script Information  ###############################################################
+# Script to facilitate Linux administration 
+#Updated 3/2/20
 #Made by richard Sabo Santos
-#to export variables use the source command to call the bash file
+
 clear
 echo " "
-#Functions section
+################################################              Functions section   ####################################################################
+ 
 
 function close(){
 if [ "$entry" == "close" ];then
@@ -33,6 +36,10 @@ function pause(){
 }
 #Main Menu
 function main() {
+
+
+
+############################################################################    Main Menu  #########################################################
 clear
 tput setaf 3; echo             LINUX ADMIN SHELL SCRIPT
 echo                            By: Richard Sabo Santos
@@ -70,47 +77,94 @@ echo 29. Show the Parameters used to boot the system.
 echo 30. Adjust user account defaults.
 echo 31. Configure SSH.
 echo 32. Start a service.
+echo 33. Enabling Trim.
+echo 34. Stop a service.
+
+echo 35. S.M.A.R.T all information.
+echo 36. S.M.A.R.T self test.
+echo 37. Check the supperblock.
+echo 38. Check hard drive health.
+echo 39. Show stats.
 tput setaf 3;  echo " "
 read -p "Enter a Number: "  option
 tput setaf 7; echo " "
 
-#If statements for  options
-if [ "$option" == '1' ];then
+
+
+#####################################################	 #If statements with all available   options ########################################################33
+if [ "$option" == '1' ];then                                    #Block Devices
 clear
 echo "Results:"
 lsblk
-pause #back to function
+date >> block.txt
+echo " " >> block.txt
+lsblk >> block.txt
+pause 
 main
-elif [ "$option" == "2" ];then
+
+
+
+
+elif [ "$option" == "2" ];then                            #memory stats
 clear
+date >> mem.txt
+echo " " >> mem.txt
         echo "Results:"
+	free "-m" >> mem.txt
 free "-m"
 echo " "
 pause
 main
 
-elif [ "$option" == "3" ];then
+
+
+
+elif [ "$option" == "3" ];then                            #cpu Info
 clear
         echo Showing CPU information
 cat /proc/cpuinfo
+date >> cpu.txt
+echo " " >> cpu.txt
+cat /proc/cpuinfo >> cpu.txt
 echo " "
 pause
 main
-elif [ "$option" == "4" ];then
+
+
+
+
+elif [ "$option" == "4" ];then                           #process maps
 clear
         echo showing process page table
 cat /proc/$$/maps
+date >> procmap.txt 
+echo " " >> procmap.txt
+cat /proc/$$maps >> procmap.txt
 echo " "
 pause
 main
-elif [ "$option" == "5" ];then
+
+
+
+
+
+
+elif [ "$option" == "5" ];then                          #verify if numa is installed
 clear
         echo results:
 numactl --hardware
+date >> numa.txt
+echo " " >> numa.txt
+numactl --hardware >> numa.txt
 echo " "
 pause
 main
-elif [ "$option" == "6" ];then
+
+
+
+
+
+elif [ "$option" == "6" ];then                         #Calculating how much memory.
 clear
 read -p "Enter the Physical RAM Currently Installed " ram
          if  [ "$ram" -lt 2  ];then
@@ -132,26 +186,39 @@ read -p "Enter the Physical RAM Currently Installed " ram
         fi
 echo " "
 main
-elif [ "$option" == "7" ];then
+
+
+
+
+
+
+
+elif [ "$option" == "7" ];then                                                           #Logged users
 clear
         echo Results:
 w
+date >> userlog.txt
+echo " " >> userlog.txt
+w >> userlog.txt
 echo " "
 pause
 main
 
 
 
-elif [ "$option" == "8" ];then
+elif [ "$option" == "8" ];then                                                          #showing running Processes 
 clear
          echo Showing Running Processes.
-        ps
+        ps 
+	date >> process.txt
+	echo " " >> process.txt 
+	ps >> process.txt
         echo " "
         pause
         main
 
 
-elif [ "$option" == "9" ];then #journal
+elif [ "$option" == "9" ];then #journal                                                  #keep JOurnal
 clear
          echo Admin Journal.
          if [ -e journal.txt ];then
@@ -178,7 +245,7 @@ clear
 
 
 
-elif [ "$option" == "10" ];then
+elif [ "$option" == "10" ];then                                                         #Check for updates 
 clear
          echo Checking for updates....
         sudo  yum install updates && echo "System Updated " && main || echo "Not permision"
@@ -186,49 +253,66 @@ clear
         main
 
 
-elif [ "$option" == "11" ];then
+elif [ "$option" == "11" ];then                                                       #Configure default grub
         vi /etc/default/grub && main
 
 
-elif [ "$option" == "12" ];then
+elif [ "$option" == "12" ];then                                                        #.bashProfile configuration file
          vi .bashrc && main
 
 elif [ "$option" == "13" ];then
          vi .bash_profile && main
-elif [ "$option" == "14" ];then
+elif [ "$option" == "14" ];then                                                         #System Information 
         clear
-        systemctl && main
+	date >> systemctl.txt
+	echo " " >> systemctl.txt
+        systemctl >> systemctl.txt
+	clear
+	cat systemctl.txt 
+       	main
 
 
-elif [ "$option" == "15" ];then
+elif [ "$option" == "15" ];then                                                          #Probing boot loader
         clear
         grubby --bootloader-probe || echo permision denied
         pause
         main
-elif [ "$option" == "16" ];then
+elif [ "$option" == "16" ];then                                                           #Updating the grub
         clear
         echo Updating the grub..
          sudo grub2-mkconfig o /boot/grub2/grub.cfg  || echo "Permission Denied"
         pause
         main
-elif [ "$option" == "17" ];then
+elif [ "$option" == "17" ];then                                                           #Enviroment Variables
         clear
         echo Showing enviroment variables.
-         env
+	 date >> enviroments.txt
+	echo " " >> enviroments.txt  
+         env >> enviroments.txt
+	 clear 
+	 cat enviroments.txt 
         pause
         main
-elif [ "$option" == "18" ];then
+elif [ "$option" == "18" ];then                                                            #Network Statistics 
         clear
         echo Showing Network Statistics...
         echo " "
-        netstat
+	date >> netstat.txt 
+	echo " " >> nestat.txt 
+        netstat >> netstat.txt
+	clear
+	cat nestat.txt
         pause
         main
-elif [ "$option" == "19" ];then
+elif [ "$option" == "19" ];then                                                           #IP configurations 
         clear
         echo Showing Ip configurations...
         echo ""
-        ifconfig
+	date >> ifconfig.txt
+	echo " " >> ifconfig.txt 
+        ifconfig >> ifconfig.txt
+	clear
+	cat ifconfig.txt
         pause
         main
 
@@ -244,7 +328,7 @@ elif [ "$option" == "20" ];then
 elif [ "$option" == "21" ];then
         clear
         echo Available disk spaces..
-        df
+        df >> diskspace.txt
         pause
         main
 
@@ -267,8 +351,11 @@ elif [ "$option" == "23" ];then
 clear
 echo Showing memory/swap Stats....
 echo ""
-cat /proc/meminfo
-vmstat
+cat /proc/meminfo >> swapmemorystats.txt
+vmstat >> swapmemorystats.txt
+clear
+cat swapmemorystats.txt
+cat swapmemorystats.txt
 
 pause
 main
@@ -315,7 +402,7 @@ elif [ "$option" == "28" ];then
 elif [ "$option" == "29" ];then
         clear
         echo Paramenter used to boot the system....
-        cat /proc/cmdline
+        cat /proc/cmdline >> bootparamet.txt
         pause
         main
 elif [ "$option" == "30" ];then
@@ -338,6 +425,67 @@ elif [ "$option" == "32" ];then
          systemctl start $service && echo $service service is now running || echo Error the service cannot start
         pause
         main
+
+
+
+elif [ "$option" == "33" ];then
+clear
+echo Enabling TRIM command for deleting SSD files....
+sudo fstrim -a -v && echo Done Command ran succesfully... || echo permission denied....
+pause
+main
+
+elif [ "$option" == "34" ];then
+        echo Stopping service..
+        read -p "Enter the service to stop " service1
+        sudo systemctl stop $service && echo Service was stopped || echo Permission Denied....
+        pause
+        main
+elif [ "$option" == "35" ];then
+        clear
+        echo smart commands...
+        read -p "Please enter the device to check.." sd
+         sudo smartctl --all $sd >> Smart.txt
+        pause
+        main
+
+
+elif [ "$option" == "36" ];then
+        clear
+        echo Selft test...
+        read -p "Please enter the device to self test.." sd1
+         sudo smartctl --test=long $sd1 >> selftest.txt
+        pause
+        main
+elif [ "$option" == "37" ];then
+        clear
+        echo Examing values in superblock...
+        echo " "
+        read -p "Please enter the device to check.. " sd2
+        sudo tune2fs -l $sd2 >> Superblock.txt
+	clear
+	cat Superblock.txt 
+        pause
+        main
+elif [ "$option" == "38" ];then
+        clear
+        echo  Drive health status...
+        echo " "
+         read -p "Please enter the device " sd3
+         sudo smartctl -H $sd3 >> Health.txt 
+	 clear
+	 cat Health.txt
+pause
+main
+
+elif [ "$option" == "39" ];then
+	clear
+	echo Showing all stats..
+	cat *.txt
+       pause
+main 
+
+
 else
 clear
 echo " Noo option was selected....."
@@ -350,3 +498,7 @@ fi
 
 }
 main
+
+	
+	
+	
